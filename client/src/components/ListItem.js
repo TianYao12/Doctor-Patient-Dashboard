@@ -1,4 +1,4 @@
-const ListItem = () => {
+const ListItem = ({tasks}) => {
     return (
         <div></div>
     )
