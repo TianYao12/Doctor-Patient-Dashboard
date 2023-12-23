@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useCookies } from "react-cookie";
 
 const Modal = ({ mode, setShowModal, task, getData }) => {
+  const [cookies, setCookie, removeCookie] = useCookies(null);
   const editMode = mode === "Edit" ? true : false;
 
   const [data, setData] = useState({
-    user_email: editMode ? task.user_email : "xtyao2015@gmail.com",
+    user_email: editMode ? task.user_email : cookies.Email,
     title: editMode ? task.title : "",
     progress: editMode ? task.progress : 50,
     date: editMode ? task.date : new Date(),
@@ -32,11 +34,14 @@ const Modal = ({ mode, setShowModal, task, getData }) => {
   const editData = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVERURL}/todos/${task.id}`, {
-        method: "PUT",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVERURL}/todos/${task.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      );
       if (response.status === 200) {
         setShowModal(false);
         getData();
@@ -53,6 +58,7 @@ const Modal = ({ mode, setShowModal, task, getData }) => {
       [name]: value,
     }));
   };
+
   return (
     <div className="overlay">
       <div className="modal">
