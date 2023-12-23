@@ -1,14 +1,17 @@
-import ListHeader from "./components/ListHeader";
-import ListItem from "./components/ListItem";
+import Header from "./components/Header";
+import Item from "./components/Item";
 import { useState, useEffect } from "react";
-import axios from "axios";
 
 const App = () => {
   const userEmail = "xtyao2015@gmail.com";
-  const [tasks, setTasks] = useState(null);
+  const name = "Tian";
+
+  // State to store the fetched tasks from the server
+  const [tasks, setTasks] = useState(null); // stores tasks from server and written by user
+
   const getData = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/todos/${userEmail}`);
+      const response = await fetch(`${process.env.REACT_APP_SERVERURL}/todos/${userEmail}`);
       const json = await response.json();
       setTasks(json);
     } catch (err) {
@@ -16,15 +19,21 @@ const App = () => {
     }
   };
 
-  useEffect(() => getData, []);
+  useEffect(() => {
+    getData();
+  }, []);
+
+  // Sorting tasks based on their dates
   const sortedTasks = tasks?.sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
+
   return (
     <div className="app">
-      <ListHeader listName={"skills"} />
+      <Header listName={name} getData={getData} />
+
       {sortedTasks?.map((task) => (
-        <ListItem key={task.id} task={task}/>
+        <Item key={task.id} task={task} getData={getData} />
       ))}
     </div>
   );
