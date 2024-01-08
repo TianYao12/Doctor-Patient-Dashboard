@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCookies } from "react-cookie";
+
 const Auth = () => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const [isLogin, setIsLogin] = useState(true);
@@ -7,27 +8,29 @@ const Auth = () => {
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [error, setError] = useState(null);
-  console.log(cookies);
+
   const viewLogin = (status) => {
     setError(null);
     setIsLogin(status);
   };
+  
   console.log(email, password, confirmPassword);
 
-  const handleSubmit = async (e, endpoint) => {
+  const handleSubmit = async (e, authtype) => {
     e.preventDefault();
     if (!isLogin && password !== confirmPassword) {
       setError("Passwords must match!");
       return;
     }
     const response = await fetch(
-      `${process.env.REACT_APP_SERVERURL}/${endpoint}`,
+      `${process.env.REACT_APP_SERVERURL}/${authtype}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       }
     );
+
     const data = await response.json();
     if (data.detail) {
       setError(data.detail);

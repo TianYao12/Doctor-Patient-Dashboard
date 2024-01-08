@@ -30,6 +30,7 @@ const Modal = ({ mode, setShowModal, task, getData }) => {
       console.error(err);
     }
   };
+  
 
   const editData = async (e) => {
     e.preventDefault();

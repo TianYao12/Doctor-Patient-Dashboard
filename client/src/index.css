@@ -205,3 +205,8 @@ form {
 .task-title {
     width:300px
 }
+
+.bottom {
+    display: flex;
+    flex-direction: column;
+}

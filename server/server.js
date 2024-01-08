@@ -10,25 +10,23 @@ const jwt = require("jsonwebtoken");
 app.use(cors());
 app.use(express.json()); // parses JSON in the request body
 
-// route to get all todos for a specific user by their email
+// get all todos for a specific user email
 app.get("/todos/:userEmail", async (req, res) => {
-  const { userEmail } = req.params; // extract the user's email from the request parameters
+  const { userEmail } = req.params;
   try {
-    // query the database to get all todos for the specified user email
+    // query  database to get all todos for specified user email
     const todos = await pool.query(
       "SELECT * FROM todos WHERE user_email = $1",
       [userEmail]
     );
-
-    // Put todos in JSON format to be fetched by frontend
-    res.json(todos.rows);
+    res.json(todos.rows); // put todos in JSON format to be fetched by frontend
   } catch (err) {
     console.log(err);
     res.status(500).send("Internal Server Error");
   }
 });
 
-// create new to-do item
+// create new to-do
 app.post("/todos", async (req, res) => {
   const { user_email, title, progress, date } = req.body;
   const id = uuidv4();
@@ -97,7 +95,6 @@ app.post("/signup", async (req, res) => {
 // login
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
   try {
     const users = await pool.query("SELECT * FROM users WHERE email = $1", [
       email,
@@ -113,6 +110,25 @@ app.post("/login", async (req, res) => {
     } else {
       res.json({ detail: "Login failed" });
     }
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+app.post("/diseases", async (req, res) => {
+  const symptoms = req.body.selectedSymptoms;
+  console.log("sumptoms", req.body);
+  try {
+    const response = await fetch(
+      "https://disease-prediction-app1-aec00936fb93.herokuapp.com/predict",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ symptoms }),
+      }
+    );
+    const data = await response.json();
+    res.json(data.disease);
   } catch (err) {
     console.error(err);
   }

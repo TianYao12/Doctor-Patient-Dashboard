@@ -7,14 +7,14 @@ const Header = ({ listName, getData }) => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
 
   const signOut = () => {
-    console.log("signout");
     removeCookie("Email");
     removeCookie("AuthToken");
     window.location.reload();
   };
+
   return (
     <div className="header-container">
-      <h1>{listName}</h1>
+      <h1>{listName}'s To-do List</h1>
       <div className="button-container">
         <button className="create" onClick={() => setShowModal(true)}>
           ADD NEW
