@@ -8,6 +8,7 @@ const App = () => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const authToken = cookies.AuthToken;
   const userEmail = cookies.Email;
+  const role = cookies.Role;
   const [tasks, setTasks] = useState(null);
   const [selectedSymptoms, setSelectedSymptoms] = useState(Array(132).fill(0));
   const [data, setData] = useState("");
@@ -28,7 +29,6 @@ const App = () => {
         body: JSON.stringify({ selectedSymptoms }),
       });
       const data = await response.json();
-      console.log("skills", data);
       setData(data);
     } catch (err) {
       console.error(err);
@@ -198,24 +198,35 @@ const App = () => {
       {!authToken && <Auth />}
       {authToken && (
         <>
-          <Header listName={userEmail} getData={getData} />
-          {sortedTasks?.map((task) => (
-            <Item key={task.id} task={task} getData={getData} />
-          ))}
+          <p>{role}</p>
+          {role === "Doctor" ? (
+            <>
+              {sortedTasks?.map((task) => (
+                <Item key={task.id} task={task} getData={getData} />
+              ))}
+            </>
+          ) : null}
+          <Header
+            listName={userEmail}
+            getData={getData}
+            hide={role === "Patient"}
+          />
           <form onSubmit={handleSubmit}>
             <div className="bottom">
               <h2>Select Symptoms:</h2>
-              {symptomsList.map((symptom, index) => (
-                <div key={symptom}>
-                  <input
-                    type="checkbox"
-                    id={symptom}
-                    checked={selectedSymptoms[index] === 1}
-                    onChange={() => handleCheckboxChange(index)}
-                  />
-                  <label htmlFor={symptom}>{symptom}</label>
-                </div>
-              ))}
+              <div className="symptom-wrapper">
+                {symptomsList.map((symptom, index) => (
+                  <div key={symptom}>
+                    <input
+                      type="checkbox"
+                      id={symptom}
+                      checked={selectedSymptoms[index] === 1}
+                      onChange={() => handleCheckboxChange(index)}
+                    />
+                    <label htmlFor={symptom}>{symptom}</label>
+                  </div>
+                ))}
+              </div>
               <button type="submit">Submit</button>
             </div>
           </form>

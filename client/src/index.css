@@ -26,10 +26,17 @@ body {
     background-color: transparent;
 
 }
-.create, .signout {
+.create{
     border: 2px solid rgba(0, 0, 0, 0.977);
     color: rgba(0, 0, 0, 0.977);
     text-transform: uppercase;
+    margin-bottom: 20px;
+} 
+.signout {
+    border: 2px solid rgba(0, 0, 0, 0.977);
+    color: rgba(0, 0, 0, 0.977);
+    text-transform: uppercase;
+    margin-bottom: 20px;
 }
 .create:hover, .signout:hover {
     background-color: rgba(218, 218, 218, 0.397);

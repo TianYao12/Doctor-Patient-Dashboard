@@ -73,17 +73,17 @@ app.delete(`/todos/:id`, async (req, res) => {
 
 // signup
 app.post("/signup", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(password, salt);
   try {
     const signUp = await pool.query(
-      `INSERT INTO users (email, hashed_password) VALUES($1, $2)`,
-      [email, hashedPassword]
+      `INSERT INTO users (email, hashed_password, role) VALUES($1, $2, $3)`,
+      [email, hashedPassword, role]
     );
 
     const token = jwt.sign({ email }, "secret", { expiresIn: "1hr" });
-    res.json({ email, token });
+    res.json({ email, token, role });
   } catch (err) {
     if (err) {
       res.json({ detail: error.detail });
@@ -94,11 +94,12 @@ app.post("/signup", async (req, res) => {
 
 // login
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
   try {
-    const users = await pool.query("SELECT * FROM users WHERE email = $1", [
-      email,
-    ]);
+    const users = await pool.query(
+      "SELECT * FROM users WHERE email = $1 AND role = $2",
+      [email, role]
+    );
     if (!users.rows.length) return res.json({ detail: "User does not exist!" });
     const success = await bcrypt.compare(
       password,
@@ -106,7 +107,7 @@ app.post("/login", async (req, res) => {
     );
     const token = jwt.sign({ email }, "secret", { expiresIn: "1hr" });
     if (success) {
-      res.json({ email: users.rows[0].email, token }); // why is it that when it's just users.email its differnet?
+      res.json({ email: users.rows[0].email, token, role }); // why is it that when it's just users.email its differnet?
     } else {
       res.json({ detail: "Login failed" });
     }

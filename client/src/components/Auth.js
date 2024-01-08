@@ -6,6 +6,7 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
+  const [role, setRole] = useState(null)
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [error, setError] = useState(null);
 
@@ -27,7 +28,7 @@ const Auth = () => {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, role }),
       }
     );
 
@@ -37,6 +38,7 @@ const Auth = () => {
     } else {
       setCookie("Email", data.email);
       setCookie("AuthToken", data.token);
+      setCookie("Role", data.role)
       window.location.reload();
     }
   };
@@ -49,6 +51,11 @@ const Auth = () => {
             type="email"
             placeholder="email"
             onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="role"
+            onChange={(e) => setRole(e.target.value)}
           />
           <input
             type="password"
@@ -70,8 +77,8 @@ const Auth = () => {
           {error && <p>{error}</p>}
         </form>
         <div className="auth-options">
-          <button onClick={() => viewLogin(false)}>Sign Up</button>
-          <button onClick={() => viewLogin(true)}>Log In</button>
+          <button style={{marginTop:"100px"}} onClick={() => viewLogin(false)}>Sign Up</button>
+          <button style={{marginTop:"100px"}} onClick={() => viewLogin(true)}>Log In</button>
         </div>
       </div>
     </div>
