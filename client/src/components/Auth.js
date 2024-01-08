@@ -67,7 +67,11 @@ const Auth = () => {
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            style={{ padding: "8px",margin:"10px 0px 10px 0px", borderRadius:"10px"}}
+            style={{
+              padding: "8px",
+              margin: "10px 0px 10px 0px",
+              borderRadius: "10px",
+            }}
           >
             <option value="" disabled>
               Select a role

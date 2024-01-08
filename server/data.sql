@@ -15,3 +15,6 @@ create table users (
 
 ALTER TABLE users
 ADD COLUMN role VARCHAR(255) DEFAULT 'patient';
+
+ALTER TABLE users
+ADD COLUMN requested VARCHAR(255) DEFAULT 'no';

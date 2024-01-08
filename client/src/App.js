@@ -12,28 +12,7 @@ const App = () => {
   const [tasks, setTasks] = useState(null);
   const [selectedSymptoms, setSelectedSymptoms] = useState(Array(132).fill(0));
   const [data, setData] = useState("");
-
-  const handleCheckboxChange = (index) => {
-    const updatedSymptoms = [...selectedSymptoms];
-    updatedSymptoms[index] = updatedSymptoms[index] === 1 ? 0 : 1;
-    setSelectedSymptoms(updatedSymptoms);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log("Selected symptoms:", selectedSymptoms);
-    try {
-      const response = await fetch("http://localhost:8000/diseases", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ selectedSymptoms }),
-      });
-      const data = await response.json();
-      setData(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const [response, setResponse] = useState(null);
 
   const symptomsList = [
     "Itching",
@@ -53,7 +32,7 @@ const App = () => {
     "Fatigue",
     "Weight Gain",
     "Anxiety",
-    "Cold Hands and Feets",
+    "Cold Hands & Feets",
     "Mood Swings",
     "Weight Loss",
     "Restlessness",
@@ -85,7 +64,7 @@ const App = () => {
     "Swelling of Stomach",
     "Swelled Lymph Nodes",
     "Malaise",
-    "Blurred and Distorted Vision",
+    "Blurred Vision",
     "Phlegm",
     "Throat Irritation",
     "Redness of Eyes",
@@ -106,13 +85,13 @@ const App = () => {
     "Obesity",
     "Swollen Legs",
     "Swollen Blood Vessels",
-    "Puffy Face and Eyes",
+    "Puffy Face & Eyes",
     "Enlarged Thyroid",
     "Brittle Nails",
     "Swollen Extremeties",
     "Excessive Hunger",
     "Extra Marital Contacts",
-    "Drying and Tingling Lips",
+    "Drying & Tingling Lips",
     "Slurred Speech",
     "Knee Pain",
     "Hip Joint Pain",
@@ -147,12 +126,12 @@ const App = () => {
     "Rusty Sputum",
     "Lack of Concentration",
     "Visual Disturbances",
-    "Receiving Blood Transfusion",
-    "Receiving Unsterile Injections",
+    "Received Blood Transfusion",
+    "Received Unsterile Injections",
     "Coma",
     "Stomach Bleeding",
     "Distention of Abdomen",
-    "History of Alcohol Consumption",
+    "Alcoholism",
     "Fluid Overload.1",
     "Blood in Sputum",
     "Prominent Veins on Calf",
@@ -169,6 +148,44 @@ const App = () => {
     "Red Sore Around Nose",
     "Yellow Crust Ooze",
   ];
+
+  const handleCheckboxChange = (index) => {
+    const updatedSymptoms = [...selectedSymptoms];
+    updatedSymptoms[index] = updatedSymptoms[index] === 1 ? 0 : 1;
+    setSelectedSymptoms(updatedSymptoms);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log("Selected symptoms:", selectedSymptoms);
+    try {
+      const response = await fetch("http://localhost:8000/diseases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ selectedSymptoms }),
+      });
+      const data = await response.json();
+      setData(`Unfortunately, you may have ${data}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRequest = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch("http://localhost:8000/requested", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userEmail, role, requested: "yes" }),
+      });
+      const data = response.json();
+      setResponse(data);
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const getData = async () => {
     try {
@@ -198,8 +215,6 @@ const App = () => {
       {!authToken && <Auth />}
       {authToken && (
         <>
-          <p>{role}</p>
-
           <Header
             listName={userEmail}
             getData={getData}
@@ -214,7 +229,6 @@ const App = () => {
           ) : null}
           {role !== "Doctor" ? (
             <>
-              (
               <form onSubmit={handleSubmit}>
                 <div className="bottom">
                   <h2>Select Symptoms:</h2>
@@ -227,17 +241,29 @@ const App = () => {
                           checked={selectedSymptoms[index] === 1}
                           onChange={() => handleCheckboxChange(index)}
                         />
-                        <label htmlFor={symptom}>{symptom}</label>
+                        <label htmlFor={symptom} style={{ marginLeft: "10px" }}>
+                          {symptom}
+                        </label>
                       </div>
                     ))}
                   </div>
-                  <button type="submit">Submit</button>
+                  <button
+                    type="submit"
+                    style={{ width: "150px", height: "40px" }}
+                  >
+                    Submit
+                  </button>
+                  <button
+                    onClick={handleRequest}
+                    style={{ width: "150px", height: "40px" }}
+                  >
+                    Request medication from a doctor
+                  </button>
                 </div>
               </form>
-              )
+              <p>{data}</p>
             </>
           ) : null}
-          <p>{data}</p>
         </>
       )}
     </div>

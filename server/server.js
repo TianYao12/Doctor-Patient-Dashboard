@@ -116,6 +116,20 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// edit a patient's request status
+app.put("/requested", async (req, res) => {
+  const { userEmail, role, requested } = req.body;
+  try {
+    const editRequest = await pool.query(
+      `UPDATE users SET requested = $1 WHERE email = $2 and role = $3`,
+      [requested, userEmail, role]
+    );
+    res.json(editRequest);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
 app.post("/diseases", async (req, res) => {
   const symptoms = req.body.selectedSymptoms;
   console.log("sumptoms", req.body);
