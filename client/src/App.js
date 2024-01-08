@@ -199,6 +199,12 @@ const App = () => {
       {authToken && (
         <>
           <p>{role}</p>
+
+          <Header
+            listName={userEmail}
+            getData={getData}
+            hide={role === "Patient"}
+          />
           {role === "Doctor" ? (
             <>
               {sortedTasks?.map((task) => (
@@ -206,30 +212,31 @@ const App = () => {
               ))}
             </>
           ) : null}
-          <Header
-            listName={userEmail}
-            getData={getData}
-            hide={role === "Patient"}
-          />
-          <form onSubmit={handleSubmit}>
-            <div className="bottom">
-              <h2>Select Symptoms:</h2>
-              <div className="symptom-wrapper">
-                {symptomsList.map((symptom, index) => (
-                  <div key={symptom}>
-                    <input
-                      type="checkbox"
-                      id={symptom}
-                      checked={selectedSymptoms[index] === 1}
-                      onChange={() => handleCheckboxChange(index)}
-                    />
-                    <label htmlFor={symptom}>{symptom}</label>
+          {role !== "Doctor" ? (
+            <>
+              (
+              <form onSubmit={handleSubmit}>
+                <div className="bottom">
+                  <h2>Select Symptoms:</h2>
+                  <div className="symptom-wrapper">
+                    {symptomsList.map((symptom, index) => (
+                      <div key={symptom}>
+                        <input
+                          type="checkbox"
+                          id={symptom}
+                          checked={selectedSymptoms[index] === 1}
+                          onChange={() => handleCheckboxChange(index)}
+                        />
+                        <label htmlFor={symptom}>{symptom}</label>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <button type="submit">Submit</button>
-            </div>
-          </form>
+                  <button type="submit">Submit</button>
+                </div>
+              </form>
+              )
+            </>
+          ) : null}
           <p>{data}</p>
         </>
       )}

@@ -16,17 +16,16 @@ const Header = ({ listName, getData, hide }) => {
   return (
     <div className="header-container">
       <h1>{listName}'s To-do List</h1>
-      {!hide ? (
-        <div className="button-container">
+      <div className="button-container">
+        {!hide ? (
           <button className="create" onClick={() => setShowModal(true)}>
             ADD NEW
           </button>
-          <button className="signout" onClick={signOut}>
-            SIGN OUT
-          </button>
-        </div>
-      ) : null}
-
+        ) : null}
+        <button className="signout" onClick={signOut}>
+          SIGN OUT
+        </button>
+      </div>
       {showModal && (
         <Modal mode={"Create"} setShowModal={setShowModal} getData={getData} />
       )}

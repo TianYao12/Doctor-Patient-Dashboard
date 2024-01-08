@@ -6,7 +6,7 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-  const [role, setRole] = useState(null)
+  const [role, setRole] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [error, setError] = useState(null);
 
@@ -14,7 +14,7 @@ const Auth = () => {
     setError(null);
     setIsLogin(status);
   };
-  
+
   console.log(email, password, confirmPassword);
 
   const handleSubmit = async (e, authtype) => {
@@ -38,7 +38,7 @@ const Auth = () => {
     } else {
       setCookie("Email", data.email);
       setCookie("AuthToken", data.token);
-      setCookie("Role", data.role)
+      setCookie("Role", data.role);
       window.location.reload();
     }
   };
@@ -46,16 +46,11 @@ const Auth = () => {
     <div className="auth-container">
       <div className="auth-container-inner">
         <form>
-          <h2>{isLogin ? "Please log in" : "Please sign up"}</h2>
+          <h2>{isLogin ? "Login" : "Sign up"}</h2>
           <input
             type="email"
             placeholder="email"
             onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="role"
-            onChange={(e) => setRole(e.target.value)}
           />
           <input
             type="password"
@@ -69,6 +64,17 @@ const Auth = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           )}
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            style={{ padding: "8px",margin:"10px 0px 10px 0px", borderRadius:"10px"}}
+          >
+            <option value="" disabled>
+              Select a role
+            </option>
+            <option value="Patient">Patient</option>
+            <option value="Doctor">Doctor</option>
+          </select>
           <input
             type="submit"
             className="create"
@@ -77,8 +83,18 @@ const Auth = () => {
           {error && <p>{error}</p>}
         </form>
         <div className="auth-options">
-          <button style={{marginTop:"100px"}} onClick={() => viewLogin(false)}>Sign Up</button>
-          <button style={{marginTop:"100px"}} onClick={() => viewLogin(true)}>Log In</button>
+          <button
+            style={{ marginTop: "100px" }}
+            onClick={() => viewLogin(false)}
+          >
+            Sign Up
+          </button>
+          <button
+            style={{ marginTop: "100px" }}
+            onClick={() => viewLogin(true)}
+          >
+            Log In
+          </button>
         </div>
       </div>
     </div>
