@@ -15,8 +15,6 @@ const Auth = () => {
     setIsLogin(status);
   };
 
-  console.log(email, password, confirmPassword);
-
   const handleSubmit = async (e, authtype) => {
     e.preventDefault();
     if (!isLogin && password !== confirmPassword) {
@@ -48,23 +46,27 @@ const Auth = () => {
         <form>
           <h2>{isLogin ? "Login" : "Sign up"}</h2>
           <input
+            required
             type="email"
             placeholder="email"
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
+            required
             type="password"
             placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
           />
           {!isLogin && (
             <input
+              required
               type="password"
               placeholder="confirm password"
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           )}
           <select
+            required
             value={role}
             onChange={(e) => setRole(e.target.value)}
             style={{

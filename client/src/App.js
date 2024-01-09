@@ -3,158 +3,29 @@ import Item from "./components/Item";
 import Auth from "./components/Auth";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
+import { symptomsList } from "./components/symptomsList";
+import PatientList from "./components/PatientList";
 
 const App = () => {
+  // session cookies
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const authToken = cookies.AuthToken;
   const userEmail = cookies.Email;
   const role = cookies.Role;
+
   const [tasks, setTasks] = useState(null);
   const [selectedSymptoms, setSelectedSymptoms] = useState(Array(132).fill(0));
   const [data, setData] = useState("");
-  const [response, setResponse] = useState(null);
+  const [patients, setPatients] = useState(null);
 
-  const symptomsList = [
-    "Itching",
-    "Skin Rash",
-    "Nodal Skin Eruptions",
-    "Continuous Sneezing",
-    "Shivering",
-    "Chills",
-    "Joint Pain",
-    "Stomach Pain",
-    "Acidity",
-    "Ulcers on Tongue",
-    "Muscle Wasting",
-    "Vomiting",
-    "Burning Micturition",
-    "Spotting Urination",
-    "Fatigue",
-    "Weight Gain",
-    "Anxiety",
-    "Cold Hands & Feets",
-    "Mood Swings",
-    "Weight Loss",
-    "Restlessness",
-    "Lethargy",
-    "Patches in Throat",
-    "Irregular Sugar Level",
-    "Cough",
-    "High Fever",
-    "Sunken Eyes",
-    "Breathlessness",
-    "Sweating",
-    "Dehydration",
-    "Indigestion",
-    "Headache",
-    "Yellowish Skin",
-    "Dark Urine",
-    "Nausea",
-    "Loss of Appetite",
-    "Pain Behind the Eyes",
-    "Back Pain",
-    "Constipation",
-    "Abdominal Pain",
-    "Diarrhoea",
-    "Mild Fever",
-    "Yellow Urine",
-    "Yellowing of Eyes",
-    "Acute Liver Failure",
-    "Fluid Overload",
-    "Swelling of Stomach",
-    "Swelled Lymph Nodes",
-    "Malaise",
-    "Blurred Vision",
-    "Phlegm",
-    "Throat Irritation",
-    "Redness of Eyes",
-    "Sinus Pressure",
-    "Runny Nose",
-    "Congestion",
-    "Chest Pain",
-    "Weakness in Limbs",
-    "Fast Heart Rate",
-    "Pain During Bowel Movements",
-    "Pain in Anal Region",
-    "Bloody Stool",
-    "Irritation in Anus",
-    "Neck Pain",
-    "Dizziness",
-    "Cramps",
-    "Bruising",
-    "Obesity",
-    "Swollen Legs",
-    "Swollen Blood Vessels",
-    "Puffy Face & Eyes",
-    "Enlarged Thyroid",
-    "Brittle Nails",
-    "Swollen Extremeties",
-    "Excessive Hunger",
-    "Extra Marital Contacts",
-    "Drying & Tingling Lips",
-    "Slurred Speech",
-    "Knee Pain",
-    "Hip Joint Pain",
-    "Muscle Weakness",
-    "Stiff Neck",
-    "Swelling Joints",
-    "Movement Stiffness",
-    "Spinning Movements",
-    "Loss of Balance",
-    "Unsteadiness",
-    "Weakness of One Body Side",
-    "Loss of Smell",
-    "Bladder Discomfort",
-    "Foul Smell of Urine",
-    "Continuous Feel of Urine",
-    "Passage of Gases",
-    "Internal Itching",
-    "Toxic Look (Typhos)",
-    "Depression",
-    "Irritability",
-    "Muscle Pain",
-    "Altered Sensorium",
-    "Red Spots Over Body",
-    "Belly Pain",
-    "Abnormal Menstruation",
-    "Dischromic Patches",
-    "Watering from Eyes",
-    "Increased Appetite",
-    "Polyuria",
-    "Family History",
-    "Mucoid Sputum",
-    "Rusty Sputum",
-    "Lack of Concentration",
-    "Visual Disturbances",
-    "Received Blood Transfusion",
-    "Received Unsterile Injections",
-    "Coma",
-    "Stomach Bleeding",
-    "Distention of Abdomen",
-    "Alcoholism",
-    "Fluid Overload.1",
-    "Blood in Sputum",
-    "Prominent Veins on Calf",
-    "Palpitations",
-    "Painful Walking",
-    "Pus Filled Pimples",
-    "Blackheads",
-    "Scurring",
-    "Skin Peeling",
-    "Silver Like Dusting",
-    "Small Dents in Nails",
-    "Inflammatory Nails",
-    "Blister",
-    "Red Sore Around Nose",
-    "Yellow Crust Ooze",
-  ];
-
+  // updates the input array to the logistic regression API
   const handleCheckboxChange = (index) => {
     const updatedSymptoms = [...selectedSymptoms];
     updatedSymptoms[index] = updatedSymptoms[index] === 1 ? 0 : 1;
     setSelectedSymptoms(updatedSymptoms);
   };
 
+  // submits the input array to the backend to get disease prediction
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("Selected symptoms:", selectedSymptoms);
@@ -171,6 +42,7 @@ const App = () => {
     }
   };
 
+  // runs when patient requests medication from doctors
   const handleRequest = async (event) => {
     event.preventDefault();
     try {
@@ -180,13 +52,12 @@ const App = () => {
         body: JSON.stringify({ userEmail, role, requested: "yes" }),
       });
       const data = response.json();
-      setResponse(data);
-      console.log(data);
     } catch (err) {
       console.error(err);
     }
   };
 
+  // gets todo items
   const getData = async () => {
     try {
       const response = await fetch(
@@ -199,14 +70,29 @@ const App = () => {
     }
   };
 
+  // gets all patients in database
+  const getPatients = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVERURL}/patients`
+      );
+      const json = await response.json();
+      setPatients(json);
+      console.log(patients);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // as long as the user is authorized, get all the patients
   useEffect(() => {
     if (authToken) {
-      getData();
+      getPatients();
     }
   }, []);
 
   // Sorting tasks based on their dates
-  const sortedTasks = tasks?.sort(
+  const sortedPatients = patients?.sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
 
@@ -222,8 +108,17 @@ const App = () => {
           />
           {role === "Doctor" ? (
             <>
-              {sortedTasks?.map((task) => (
+              {/* {sortedTasks?.map((task) => (
                 <Item key={task.id} task={task} getData={getData} />
+              ))} */}
+              {patients?.map((patient) => (
+                <>
+                  <PatientList
+                    key={patient.id}
+                    patient={patient}
+                    getPatients={getPatients}
+                  />
+                </>
               ))}
             </>
           ) : null}

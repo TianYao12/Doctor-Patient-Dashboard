@@ -26,6 +26,20 @@ app.get("/todos/:userEmail", async (req, res) => {
   }
 });
 
+// get all users with the role 'Patient'
+app.get("/patients", async (req, res) => {
+  try {
+    const patients = await pool.query(
+      `SELECT * FROM users WHERE role = 'Patient'`
+    );
+    res.json(patients.rows);
+    console.log(patients.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // create new to-do
 app.post("/todos", async (req, res) => {
   const { user_email, title, progress, date } = req.body;
@@ -52,6 +66,21 @@ app.put(`/todos/:id`, async (req, res) => {
       [user_email, title, progress, date, id]
     );
     res.json(editToDo);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+// edit a patient's prescription
+app.put(`/patients/:email`, async (req, res) => {
+  const { email } = req.params;
+  const { requested, medication, dosage, date } = req.body;
+  try {
+    const editPatient = await pool.query(
+      `UPDATE users SET date = $1, requested = $2, medication = $3, dosage = $4 WHERE email = $5`,
+      [date, requested, medication, dosage, email]
+    );
+    res.json(editPatient)
   } catch (err) {
     console.error(err);
   }
@@ -85,7 +114,7 @@ app.post("/signup", async (req, res) => {
     const token = jwt.sign({ email }, "secret", { expiresIn: "1hr" });
     res.json({ email, token, role });
   } catch (err) {
-    if (err) {
+    if (error) {
       res.json({ detail: error.detail });
     }
     console.error(err);
@@ -148,4 +177,5 @@ app.post("/diseases", async (req, res) => {
     console.error(err);
   }
 });
+
 app.listen(PORT, () => console.log(`Server running on Port ${PORT}`));
