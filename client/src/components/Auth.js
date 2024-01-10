@@ -4,10 +4,10 @@ import { useCookies } from "react-cookie";
 const Auth = () => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [role, setRole] = useState(null);
-  const [confirmPassword, setConfirmPassword] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("");
   const [error, setError] = useState(null);
 
   const viewLogin = (status) => {
@@ -49,12 +49,14 @@ const Auth = () => {
             required
             type="email"
             placeholder="email"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
             required
             type="password"
             placeholder="password"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           {!isLogin && (
@@ -62,6 +64,7 @@ const Auth = () => {
               required
               type="password"
               placeholder="confirm password"
+              value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           )}
