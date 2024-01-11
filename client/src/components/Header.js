@@ -20,17 +20,9 @@ const Header = ({ listName, getData, hide }) => {
       )}
 
       <div className="button-container">
-        {!hide ? (
-          <>
             <button className="signout" onClick={signOut}>
               Sign Out
             </button>
-          </>
-        ) : (
-          <button className="signout" onClick={signOut}>
-            Sign Out
-          </button>
-        )}
       </div>
       {showModal && (
         <Modal mode={"Create"} setShowModal={setShowModal} getData={getData} />
