@@ -10,22 +10,6 @@ const jwt = require("jsonwebtoken");
 app.use(cors());
 app.use(express.json()); // parses JSON in the request body
 
-// get all todos for a specific user email
-app.get("/todos/:userEmail", async (req, res) => {
-  const { userEmail } = req.params;
-  try {
-    // query  database to get all todos for specified user email
-    const todos = await pool.query(
-      "SELECT * FROM todos WHERE user_email = $1",
-      [userEmail]
-    );
-    res.json(todos.rows); // put todos in JSON format to be fetched by frontend
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
 // get all users with the role 'Patient'
 app.get("/patients", async (req, res) => {
   try {
@@ -37,37 +21,6 @@ app.get("/patients", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// create new to-do
-app.post("/todos", async (req, res) => {
-  const { user_email, title, progress, date } = req.body;
-  const id = uuidv4();
-  try {
-    const newToDo = await pool.query(
-      `INSERT INTO todos(id, user_email, title, progress, date) VALUES($1, $2, $3, $4, $5)`,
-      [id, user_email, title, progress, date]
-    );
-    res.json(newToDo);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
-// edit a to-do
-app.put(`/todos/:id`, async (req, res) => {
-  const { id } = req.params;
-  const { user_email, title, progress, date } = req.body;
-  try {
-    const editToDo = await pool.query(
-      `UPDATE todos SET user_email = $1, title = $2, progress = $3, date = $4 WHERE id=$5`,
-      [user_email, title, progress, date, id]
-    );
-    res.json(editToDo);
-  } catch (err) {
-    console.error(err);
   }
 });
 
@@ -86,17 +39,37 @@ app.put(`/patients/:email`, async (req, res) => {
   }
 });
 
-// delete a to-do
-app.delete(`/todos/:id`, async (req, res) => {
-  const { id } = req.params;
-  const { user_email, title, progress, date } = req.body;
+// edit a patient's request status
+app.put("/requested", async (req, res) => {
+  const { userEmail, role, requested } = req.body;
   try {
-    const deleteToDo = await pool.query(`DELETE FROM todos WHERE id = $1`, [
-      id,
-    ]);
-    res.json(deleteToDo);
+    const editRequest = await pool.query(
+      `UPDATE users SET requested = $1 WHERE email = $2 and role = $3`,
+      [requested, userEmail, role]
+    );
+    res.json(editRequest);
   } catch (err) {
-    console.error(error);
+    console.error(err);
+  }
+});
+
+// POST request to disease API
+app.post("/diseases", async (req, res) => {
+  const symptoms = req.body.selectedSymptoms;
+  console.log("sumptoms", req.body);
+  try {
+    const response = await fetch(
+      "https://disease-prediction-app1-aec00936fb93.herokuapp.com/predict",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ symptoms }),
+      }
+    );
+    const data = await response.json();
+    res.json(data.disease);
+  } catch (err) {
+    console.error(err);
   }
 });
 
@@ -145,36 +118,65 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// edit a patient's request status
-app.put("/requested", async (req, res) => {
-  const { userEmail, role, requested } = req.body;
+
+// get all todos for a specific user email
+app.get("/todos/:userEmail", async (req, res) => {
+  const { userEmail } = req.params;
   try {
-    const editRequest = await pool.query(
-      `UPDATE users SET requested = $1 WHERE email = $2 and role = $3`,
-      [requested, userEmail, role]
+    // query  database to get all todos for specified user email
+    const todos = await pool.query(
+      "SELECT * FROM todos WHERE user_email = $1",
+      [userEmail]
     );
-    res.json(editRequest);
+    res.json(todos.rows); // put todos in JSON format to be fetched by frontend
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// create new to-do
+app.post("/todos", async (req, res) => {
+  const { user_email, title, progress, date } = req.body;
+  const id = uuidv4();
+  try {
+    const newToDo = await pool.query(
+      `INSERT INTO todos(id, user_email, title, progress, date) VALUES($1, $2, $3, $4, $5)`,
+      [id, user_email, title, progress, date]
+    );
+    res.json(newToDo);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// edit a to-do
+app.put(`/todos/:id`, async (req, res) => {
+  const { id } = req.params;
+  const { user_email, title, progress, date } = req.body;
+  try {
+    const editToDo = await pool.query(
+      `UPDATE todos SET user_email = $1, title = $2, progress = $3, date = $4 WHERE id=$5`,
+      [user_email, title, progress, date, id]
+    );
+    res.json(editToDo);
   } catch (err) {
     console.error(err);
   }
 });
 
-app.post("/diseases", async (req, res) => {
-  const symptoms = req.body.selectedSymptoms;
-  console.log("sumptoms", req.body);
+// delete a to-do
+app.delete(`/todos/:id`, async (req, res) => {
+  const { id } = req.params;
+  const { user_email, title, progress, date } = req.body;
   try {
-    const response = await fetch(
-      "https://disease-prediction-app1-aec00936fb93.herokuapp.com/predict",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ symptoms }),
-      }
-    );
-    const data = await response.json();
-    res.json(data.disease);
+    const deleteToDo = await pool.query(`DELETE FROM todos WHERE id = $1`, [
+      id,
+    ]);
+    res.json(deleteToDo);
   } catch (err) {
-    console.error(err);
+    console.error(error);
   }
 });
 
