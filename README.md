@@ -10,7 +10,7 @@ It is a simple **logistic regression** model trained from a Kaggle dataset (http
 On the small testing dataset, it achieves **100% **accuracy. 
 The model is deployed using **FastAPI**, **Docker**, and **Heroku**.
 
-The frontend of the web application is done in **React**, with an **Express.js** backend, and **PostgresSQL**.
+The frontend of the web application is done in **React**, with an **Express.js** backend, and **PostgreSQL**.
 
 
 **Originally this was a CRUD to-do app, so since this is a work in progress some of the files are remnants of the to-do app.**
