@@ -24,8 +24,7 @@ const Modal = ({ setShowModal, patient, getPatients }) => {
       );
       console.log(response.status)
       if (response.status === 200) {
-        setShowModal(false);
-        getPatients();
+        setShowModal(false)
       }
     } catch (err) {
       console.error(err);

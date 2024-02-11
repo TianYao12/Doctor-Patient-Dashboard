@@ -2,7 +2,7 @@ import Modal from "./Modal";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 
-const Header = ({ listName, getData, hide }) => {
+const Header = ({ listName, getPatients, hide }) => {
   const [showModal, setShowModal] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const signOut = () => {
@@ -25,7 +25,7 @@ const Header = ({ listName, getData, hide }) => {
             </button>
       </div>
       {showModal && (
-        <Modal mode={"Create"} setShowModal={setShowModal} getData={getData} />
+        <Modal mode={"Create"} setShowModal={setShowModal} getPatients={getPatients} />
       )}
     </div>
   );

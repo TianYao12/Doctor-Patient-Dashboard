@@ -119,16 +119,15 @@ app.post("/login", async (req, res) => {
 });
 
 
-// get all todos for a specific user email
-app.get("/todos/:userEmail", async (req, res) => {
+// get patient info for a specific user email
+app.get("/patient/:userEmail", async (req, res) => {
   const { userEmail } = req.params;
   try {
-    // query  database to get all todos for specified user email
-    const todos = await pool.query(
-      "SELECT * FROM todos WHERE user_email = $1",
+    const patient_info = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
       [userEmail]
     );
-    res.json(todos.rows); // put todos in JSON format to be fetched by frontend
+    res.json(patient_info.rows); // put data in JSON format to be fetched by frontend
   } catch (err) {
     console.log(err);
     res.status(500).send("Internal Server Error");

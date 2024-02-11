@@ -223,6 +223,32 @@ form {
 
 .symptom-wrapper {
     display: grid;
-    grid-template-columns: 200px 200px 200px 200px 200px 200px ;
+    grid-template-columns: 200px 200px 200px 200px 200px 200px;
 
+}
+
+
+.button {
+    width: 150px;
+    height: 40px;
+    background-color: rgba(156, 227, 234, 0.972); 
+    border-radius: 3px;
+    border-color: black;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: rgba(114, 218, 227, 0.972); 
+}
+
+.button:active {
+    background-color: rgba(0, 48, 53, 0.972); 
+    color: white;
+}
+
+.back {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
 }
