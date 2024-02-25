@@ -9,18 +9,20 @@ const Auth = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("");
   const [error, setError] = useState(null);
-
+  // viewLogin(status) directs to login view if status is true and sign up view otherwise
   const viewLogin = (status) => {
     setError(null);
     setIsLogin(status);
   };
-
+  // handleSubmit(e, authtype) handles form submission
   const handleSubmit = async (e, authtype) => {
     e.preventDefault();
+    // if signup view check if passwords match
     if (!isLogin && password !== confirmPassword) {
       setError("Passwords must match!");
       return;
     }
+    // make a POST request depending on signup or login with user data
     const response = await fetch(
       `${process.env.REACT_APP_SERVERURL}/${authtype}`,
       {
@@ -29,22 +31,24 @@ const Auth = () => {
         body: JSON.stringify({ email, password, role }),
       }
     );
-
-    const data = await response.json();
-    if (data.detail) {
+    
+    const data = await response.json(); // get response data
+    if (data.detail) { // handle errors
       setError(data.detail);
-    } else {
+    } else { // if no errors, set cookies and reload page
       setCookie("Email", data.email);
       setCookie("AuthToken", data.token);
       setCookie("Role", data.role);
       window.location.reload();
     }
   };
+  // render authenticated page
   return (
     <div className="auth-container">
       <div className="auth-container-inner">
         <form>
           <h2>{isLogin ? "Login" : "Sign up"}</h2>
+          {/* Email */}
           <input
             required
             type="email"
@@ -52,6 +56,7 @@ const Auth = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+          {/* Password */}
           <input
             required
             type="password"
@@ -59,6 +64,7 @@ const Auth = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {/* Confirm password for signup */}
           {!isLogin && (
             <input
               required

@@ -1,3 +1,4 @@
+// ProgressBar(progress) updates the progress bar on the frontend based on the progress parameter
 const ProgressBar = ({ progress }) => {
  
   return (

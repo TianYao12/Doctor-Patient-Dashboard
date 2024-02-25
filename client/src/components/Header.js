@@ -1,22 +1,24 @@
-import Modal from "./Modal";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 
-const Header = ({ listName, getPatients, hide }) => {
-  const [showModal, setShowModal] = useState(false);
+// Header(email, getPatients, user_type)
+const Header = ({ email, user_type }) => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
+  // signout() removes cookies and reloads page to signout
   const signOut = () => {
     removeCookie("Email");
     removeCookie("AuthToken");
     removeCookie("Role");
     window.location.reload();
   };
+
+  // renders header component
   return (
     <div className="header-container">
-      {hide ? (
-        <h1>{listName}'s Symptom-Disease Dashboard</h1>
+      {user_type ? (
+        <h1>{email}'s Symptom-Disease Dashboard</h1>
       ) : (
-        <h1>{listName}'s Patient Dashboard</h1>
+        <h1>{email}'s Patient Dashboard</h1>
       )}
 
       <div className="button-container">
@@ -24,9 +26,7 @@ const Header = ({ listName, getPatients, hide }) => {
               Sign Out
             </button>
       </div>
-      {showModal && (
-        <Modal mode={"Create"} setShowModal={setShowModal} getPatients={getPatients} />
-      )}
+
     </div>
   );
 };

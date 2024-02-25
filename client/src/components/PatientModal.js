@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 
-const Modal = ({ setShowModal, patient, getPatients }) => {
+// Modal(setShowModal, patient) displays a modal to edit the patient's medication 
+// If the patient does not ask for medication, an appropriate error modal is displayed
+const Modal = ({ setShowModal, patient }) => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
 
+  // stores patient data
   const [data, setData] = useState({
     requested: patient.requested,
     medication: patient.medication,
@@ -11,6 +14,7 @@ const Modal = ({ setShowModal, patient, getPatients }) => {
     date: new Date(),
   });
 
+  // editData sends a PUT request to the server to update the patient's 
   const editData = async (e) => {
     e.preventDefault();
     try {

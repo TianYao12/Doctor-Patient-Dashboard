@@ -1,7 +1,8 @@
 import TickIcon from "./TickIcon";
 import { useState } from "react";
-import PatientModel from "./PatientModal";
+import Modal from "./PatientModal";
 
+// PatientList(patient, getPatients) displays all patients
 const PatientList = ({ patient, getPatients }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -17,7 +18,7 @@ const PatientList = ({ patient, getPatients }) => {
         </button>
       </div>
       {showModal && (
-        <PatientModel
+        <Modal
           setShowModal={setShowModal}
           patient={patient}
           getPatients={getPatients}

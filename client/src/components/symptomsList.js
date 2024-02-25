@@ -1,3 +1,5 @@
+// list of symptoms where the patient's click of yes or no on frontend
+// is sent to deployed logistic regression model API
 export const symptomsList = [
     "Itching",
     "Skin Rash",
