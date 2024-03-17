@@ -59,7 +59,7 @@ app.post("/diseases", async (req, res) => {
   console.log("sumptoms", req.body);
   try {
     const response = await fetch(
-      "https://disease-prediction-app1-aec00936fb93.herokuapp.com/predict",
+      `${process.env.HEROKU_URL}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
