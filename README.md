@@ -8,7 +8,7 @@ Patients can select the symptoms they are feeling and submit the info to a deplo
 
 It is a simple **logistic regression** model trained from a Kaggle dataset (https://www.kaggle.com/datasets/kaushil268/disease-prediction-using-machine-learning) using sklearn. 
 On the small testing dataset, it achieves **100% **accuracy. 
-The model is deployed using **FastAPI**, **Docker**, and **Heroku**.
+The model is deployed using **FastAPI**, **Docker**, and **AWS Lambda**.
 
 The frontend of the web application is done in **React**, with an **Express.js** backend, and **PostgreSQL**.
 
