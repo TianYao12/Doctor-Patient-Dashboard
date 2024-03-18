@@ -56,10 +56,10 @@ app.put("/requested", async (req, res) => {
 // POST request to disease API
 app.post("/diseases", async (req, res) => {
   const symptoms = req.body.selectedSymptoms;
-  console.log("sumptoms", req.body);
+  console.log("symptoms", req.body);
   try {
     const response = await fetch(
-      `${process.env.HEROKU_URL}`,
+      `${process.env.AWS_URL}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
